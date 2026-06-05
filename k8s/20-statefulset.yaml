@@ -1,0 +1,80 @@
+# Headless Service (required for StatefulSet stable identities) + 8 warm pods
+# with stable names sandbox-runner-0 .. -7.
+apiVersion: v1
+kind: Service
+metadata:
+  name: sandbox-runners
+  namespace: pi-sandbox
+  labels:
+    app: sandbox-runner
+spec:
+  clusterIP: None
+  selector:
+    app: sandbox-runner
+  ports:
+    - name: noop
+      port: 9999
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sandbox-runner
+  namespace: pi-sandbox
+  labels:
+    app: sandbox-runner
+spec:
+  serviceName: sandbox-runners
+  replicas: 8
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: sandbox-runner
+  template:
+    metadata:
+      labels:
+        app: sandbox-runner
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      automountServiceAccountToken: false
+      containers:
+        - name: runner
+          image: node:22-alpine
+          workingDir: /workspace
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              mkdir -p /workspace/src
+              echo "hello from the sandbox" > /workspace/hello.txt
+              printf '{\n  "name": "sandbox-workspace"\n}\n' > /workspace/package.json
+              echo "console.log('hi');" > /workspace/src/index.js
+              touch /workspace/.ready
+              exec tail -f /dev/null
+          env:
+            - name: POD_NAME
+              valueFrom: { fieldRef: { fieldPath: metadata.name } }
+            - name: POD_NAMESPACE
+              valueFrom: { fieldRef: { fieldPath: metadata.namespace } }
+          resources:
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          readinessProbe:
+            exec:
+              command: ["/bin/sh", "-c", "test -f /workspace/.ready"]
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+      volumes:
+        - name: workspace
+          emptyDir: {}
