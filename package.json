@@ -6,6 +6,9 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "dev": "bun --watch run src/index.ts",
+    "test": "bun test test/unit",
+    "test:integration": "bun test test/integration --timeout 25000",
+    "test:all": "bun test",
     "test:leasing": "bun run src/scripts/test-leasing.ts",
     "typecheck": "bunx tsc --noEmit"
   },

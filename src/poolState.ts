@@ -1,7 +1,6 @@
 import { kubectl } from "./sandbox/kubectl";
 import { listLeases, isFree, expiresAt } from "./sandbox/leases";
 
-/** Build the GET /pods payload: each pod's readiness + lease status. */
 export async function getPodsState() {
   const [leases, ready] = await Promise.all([listLeases(), podReadiness()]);
   return leases.map((l) => ({
@@ -13,7 +12,6 @@ export async function getPodsState() {
   }));
 }
 
-/** Count of ready sandbox pods (for GET /health). Throws if cluster unreachable. */
 export async function sandboxPodsReady(): Promise<number> {
   const ready = await podReadiness();
   return [...ready.values()].filter(Boolean).length;

@@ -5,7 +5,6 @@ import type { Owner } from "../sandbox/leaseManager";
 import type { ToolCall } from "../pi/types";
 import { validateCommand, resolveInWorkdir, WORKDIR } from "./security";
 
-/** Build the 3 sandbox tools for one request (bound to its recorder + ids). */
 export function createTools(recorder: ToolCall[], base: Omit<Owner, "toolCallId">): AgentTool[] {
   const owner = (toolCallId: string): Owner => ({ ...base, toolCallId });
 
@@ -36,7 +35,7 @@ export function createTools(recorder: ToolCall[], base: Omit<Owner, "toolCallId"
     }),
     execute: async (toolCallId, raw) => {
       const { path } = raw as { path: string };
-      const safe = resolveInWorkdir(path); // throws on escape, before touching the pod
+      const safe = resolveInWorkdir(path); 
       const { stdout, stderr, exitCode } = await runInSandbox(owner(toolCallId), "fs.read", recorder, ["cat", safe]);
       if (exitCode !== 0) throw new Error(`could not read ${safe}: ${stderr.trim() || "non-zero exit"}`);
       return { content: [{ type: "text", text: stdout }], details: { path: safe, bytes: stdout.length } };
@@ -50,7 +49,6 @@ export function createTools(recorder: ToolCall[], base: Omit<Owner, "toolCallId"
       "Report the sandbox pod's name, namespace, working directory, user, and runtime versions.",
     parameters: Type.Object({}),
     execute: async (toolCallId) => {
-      // Fixed (non-user) command, so it is not subject to the shell.run allowlist.
       const script =
         "const os=require('os');console.log(JSON.stringify({" +
         "podName:process.env.POD_NAME||os.hostname()," +

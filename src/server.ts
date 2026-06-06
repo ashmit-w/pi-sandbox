@@ -4,15 +4,10 @@ import type { PiClient } from "./pi/types";
 import { manager, CapacityTimeoutError } from "./sandbox/leaseManager";
 import { getPodsState, sandboxPodsReady } from "./poolState";
 
-/**
- * The HTTP layer. Depends only on the PiClient interface (+ the shared lease
- * manager singleton for queue depth) — it knows nothing about the Pi SDK.
- */
 export function createServer(piClient: PiClient) {
   const app = express();
   app.use(express.json({ limit: "256kb" }));
 
-  // POST /chat — run a chat turn; tool calls route through the lease manager.
   app.post("/chat", async (req: Request, res: Response) => {
     const { sessionId, message } = req.body ?? {};
     if (typeof sessionId !== "string" || !sessionId.trim())
@@ -34,7 +29,6 @@ export function createServer(piClient: PiClient) {
     }
   });
 
-  // GET /pods — pool state: readiness + lease status + queue depth.
   app.get("/pods", async (_req: Request, res: Response) => {
     try {
       const pods = await getPodsState();
@@ -45,7 +39,6 @@ export function createServer(piClient: PiClient) {
     }
   });
 
-  // GET /health — service + cluster health.
   app.get("/health", async (_req: Request, res: Response) => {
     try {
       const ready = await sandboxPodsReady();

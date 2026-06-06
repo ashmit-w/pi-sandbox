@@ -3,7 +3,6 @@ import { listLeases, isFree, setHolder } from "./leases";
 const MAX_WAIT_MS = Number(process.env.QUEUE_MAX_WAIT_MS ?? 15_000);
 const POLL_MS = 300;
 
-/** Who holds a lease — encoded into holderIdentity for debuggability. */
 export type Owner = {
   instanceId: string;
   requestId: string;
@@ -31,16 +30,10 @@ type Waiter = {
   deadline: number;
 };
 
-/**
- * Just-in-time pod leasing with a bounded FIFO queue. One `pump` loop serves
- * the queue head-first, one at a time. The Kubernetes Lease (compare-and-swap
- * in leases.ts) is the real lock; this just decides who asks next, in order.
- */
 export class LeaseManager {
   private queue: Waiter[] = [];
   private pumping = false;
 
-  /** Park the caller in the FIFO queue; resolved when a pod is free. */
   acquire(owner: Owner): Promise<Acquired> {
     return new Promise((resolve, reject) => {
       this.queue.push({ owner, resolve, reject, deadline: Date.now() + MAX_WAIT_MS });
@@ -53,7 +46,7 @@ export class LeaseManager {
   }
 
   private async pump(): Promise<void> {
-    if (this.pumping) return; // only one pump runs at a time
+    if (this.pumping) return;
     this.pumping = true;
     try {
       while (this.queue.length > 0) {
@@ -69,7 +62,7 @@ export class LeaseManager {
           w.resolve(got);
           continue;
         }
-        await Bun.sleep(POLL_MS); // none free → wait, then retry the head
+        await Bun.sleep(POLL_MS);
       }
     } finally {
       this.pumping = false;
@@ -81,14 +74,13 @@ export class LeaseManager {
     try {
       leases = await listLeases();
     } catch {
-      return null; // transient hiccup; pump retries
+      return null;
     }
     for (const l of leases) {
       if (!isFree(l)) continue;
       if (await setHolder(l, holderIdentity(owner))) {
         return { podName: l.name, release: () => this.release(l.name, owner) };
       }
-      // someone claimed it first (409) → try the next free lease
     }
     return null;
   }
@@ -98,10 +90,8 @@ export class LeaseManager {
       const l = (await listLeases()).find((x) => x.name === podName);
       if (l && l.holder === holderIdentity(owner)) await setHolder(l, "");
     } catch {
-      // best-effort; the lease otherwise expires via its TTL
     }
   }
 }
 
-/** The single shared pool for the whole process. */
 export const manager = new LeaseManager();

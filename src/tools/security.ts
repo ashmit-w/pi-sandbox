@@ -1,9 +1,6 @@
-// Command allowlist for shell.run + path containment for fs.read / cat.
-
 const ALLOWED = new Set(["pwd", "ls", "cat", "whoami", "node"]);
 export const WORKDIR = process.env.SANDBOX_WORKDIR ?? "/workspace";
 
-/** Validate a shell.run command into an argv array. Throws if not allowed. */
 export function validateCommand(command: string): string[] {
   const argv = command.trim().split(/\s+/).filter(Boolean);
   const prog = argv[0];
@@ -12,14 +9,12 @@ export function validateCommand(command: string): string[] {
   if (prog === "node" && argv[1] !== "--version") {
     throw new Error("node is restricted to --version");
   }
-  // Any path-looking argument must resolve inside WORKDIR.
   for (const arg of argv.slice(1)) {
     if (arg.startsWith("/") || arg.includes("..")) resolveInWorkdir(arg);
   }
   return argv;
 }
 
-/** Resolve a path and ensure it stays within WORKDIR. Throws on escape. */
 export function resolveInWorkdir(path: string): string {
   const abs = path.startsWith("/") ? path : `${WORKDIR}/${path}`;
   const norm = normalize(abs);
