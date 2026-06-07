@@ -6,7 +6,7 @@ import { getPodsState, sandboxPodsReady } from "./poolState";
 
 export function createServer(piClient: PiClient) {
   const app = express();
-  app.use(express.json({ limit: "256kb" }));
+  app.use(express.json());
 
   app.post("/chat", async (req: Request, res: Response) => {
     const { sessionId, message } = req.body ?? {};

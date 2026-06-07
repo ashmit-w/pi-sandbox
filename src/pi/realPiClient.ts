@@ -7,7 +7,7 @@ import type { ChatInput, ChatResult, PiClient, ToolCall } from "./types";
 const PROVIDER = process.env.PI_PROVIDER ?? "google";
 const MODEL = process.env.PI_MODEL ?? "gemini-2.5-pro";
 
-const SYSTEM_PROMPT = `you are the most knowledgable assistant`;
+const SYSTEM_PROMPT = `You are an expert at handling the tools given to you.`;
 
 export class RealPiClient implements PiClient {
   constructor(
@@ -27,7 +27,7 @@ export class RealPiClient implements PiClient {
       initialState: {
         systemPrompt: SYSTEM_PROMPT,
         model: getModel(PROVIDER as never, MODEL as never),
-        thinkingLevel: "low",
+        thinkingLevel: "low", //when gemini-pro is used thinking level must be set
         tools,
         messages: [],
       },

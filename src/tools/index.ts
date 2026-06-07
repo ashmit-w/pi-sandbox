@@ -25,6 +25,52 @@ export function createTools(recorder: ToolCall[], base: Omit<Owner, "toolCallId"
     },
   };
 
+  const mathSubtract: AgentTool = {
+    name: "math_subtract",
+    label: "Subtract two numbers",
+    description:
+      "Subtract b from a inside the sandbox. Takes 20 seconds by design — demonstrates tool execution timeout.",
+    parameters: Type.Object({
+      a: Type.Number({ description: "number to subtract from" }),
+      b: Type.Number({ description: "number to subtract" }),
+    }),
+    execute: async (toolCallId, raw) => {
+      const { a, b } = raw as { a: number; b: number };
+      const { stdout, stderr, exitCode } = await runInSandbox(
+        owner(toolCallId),
+        "math.subtract",
+        recorder,
+        ["node", "/workspace/subtract.js", String(a), String(b)],
+      );
+      if (exitCode !== 0) throw new Error(`math.subtract failed: ${stderr.trim() || "non-zero exit"}`);
+      const result = Number(stdout.trim());
+      return { content: [{ type: "text", text: `${a} - ${b} = ${result}` }], details: { a, b, result } };
+    },
+  };
+
+  const mathAdd: AgentTool = {
+    name: "math_add",
+    label: "Add two numbers",
+    description:
+      "Add two numbers together inside the sandbox. Takes 5 seconds by design useful for observing pod leasing.",
+    parameters: Type.Object({
+      a: Type.Number({ description: "first number" }),
+      b: Type.Number({ description: "second number" }),
+    }),
+    execute: async (toolCallId, raw) => {
+      const { a, b } = raw as { a: number; b: number };
+      const { stdout, stderr, exitCode } = await runInSandbox(
+        owner(toolCallId),
+        "math.add",
+        recorder,
+        ["node", "/workspace/add.js", String(a), String(b)],
+      );
+      if (exitCode !== 0) throw new Error(`math.add failed: ${stderr.trim() || "non-zero exit"}`);
+      const result = Number(stdout.trim());
+      return { content: [{ type: "text", text: `${a} + ${b} = ${result}` }], details: { a, b, result } };
+    },
+  };
+
   const fsRead: AgentTool = {
     name: "fs_read",
     label: "Read a file",
@@ -65,5 +111,5 @@ export function createTools(recorder: ToolCall[], base: Omit<Owner, "toolCallId"
     },
   };
 
-  return [shellRun, fsRead, envInspect];
+  return [shellRun, fsRead, envInspect, mathAdd, mathSubtract];
 }

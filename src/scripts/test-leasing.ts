@@ -1,6 +1,3 @@
-// Concurrency test: fire 9 "tool calls" at once against 8 pods. Each pod stays
-// busy ~2s (the sleep runs INSIDE the pod), so only 8 run at a time and the 9th
-// queues until one frees. No LLM / API key needed — exercises the sandbox layer.
 import { runInSandbox } from "../sandbox/runInSandbox";
 import { manager } from "../sandbox/leaseManager";
 import type { ToolCall } from "../pi/types";

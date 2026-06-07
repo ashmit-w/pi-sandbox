@@ -6,7 +6,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterAll } from "bun:test";
-import { manager, LeaseManager, CapacityTimeoutError } from "../../src/sandbox/leaseManager";
+import { manager, CapacityTimeoutError } from "../../src/sandbox/leaseManager";
 import type { Acquired } from "../../src/sandbox/leaseManager";
 import { listLeases, setHolder, isFree } from "../../src/sandbox/leases";
 
@@ -21,7 +21,7 @@ async function resetAllLeases() {
   await Bun.sleep(200);
 }
 
-function mkOwner(n: number) {
+function mkOwner(n: string | number) {
   return { instanceId: "test", requestId: `req-${n}`, sessionId: "s", toolCallId: `tc-${n}` };
 }
 
@@ -189,16 +189,16 @@ describe("FIFO queue", () => {
     const held = await Promise.all(Array.from({ length: 8 }, (_, i) => manager.acquire(mkOwner(63_0 + i))));
 
     const order: number[] = [];
-    const a = manager.acquire(mkOwner(63_a)).then((x) => { order.push(1); return x; });
+    const pA = manager.acquire(mkOwner("63a")).then((x) => { order.push(1); return x; });
     await Bun.sleep(50);
-    const b = manager.acquire(mkOwner(63_b)).then((x) => { order.push(2); return x; });
+    const pB = manager.acquire(mkOwner("63b")).then((x) => { order.push(2); return x; });
 
     // release 2 pods so both queued callers can proceed
     await held[0]!.release();
     await Bun.sleep(100);
     await held[1]!.release();
 
-    const [ra, rb] = await Promise.all([a, b]);
+    const [ra, rb] = await Promise.all([pA, pB]);
     await Promise.all([ra.release(), rb.release(), ...held.slice(2).map((h) => h.release())]);
 
     expect(order[0]).toBe(1); // first queued resolves first
@@ -288,7 +288,7 @@ describe("release safety", () => {
   });
 
   it("74. release() does not clear a lease held by a different owner", async () => {
-    const a = await manager.acquire(mkOwner(74_a));
+    const a = await manager.acquire(mkOwner("74a"));
     const podName = a.podName;
 
     // Simulate another caller claiming the same lease (force-write via setHolder)

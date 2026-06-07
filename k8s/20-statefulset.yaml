@@ -51,7 +51,15 @@ spec:
               mkdir -p /workspace/src
               echo "hello from the sandbox" > /workspace/hello.txt
               printf '{\n  "name": "sandbox-workspace"\n}\n' > /workspace/package.json
-              echo "console.log('hi');" > /workspace/src/index.js
+              echo "console.log('hi');" > /workspace/src/index.
+              cat > /workspace/add.js << 'EOF'
+              const [a, b] = [Number(process.argv[2]), Number(process.argv[3])];
+              setTimeout(() => { console.log(a + b); }, 5000);
+              EOF
+              cat > /workspace/subtract.js << 'EOF'
+              const [a, b] = [Number(process.argv[2]), Number(process.argv[3])];
+              setTimeout(() => { console.log(a - b); }, 14000);
+              EOF
               touch /workspace/.ready
               exec tail -f /dev/null
           env:
