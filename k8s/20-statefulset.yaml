@@ -58,7 +58,7 @@ spec:
               EOF
               cat > /workspace/subtract.js << 'EOF'
               const [a, b] = [Number(process.argv[2]), Number(process.argv[3])];
-              setTimeout(() => { console.log(a - b); }, 14000);
+              setTimeout(() => { console.log(a - b); }, 20000);
               EOF
               touch /workspace/.ready
               exec tail -f /dev/null

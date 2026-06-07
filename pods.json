@@ -1,0 +1,2057 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-06-06T19:42:00Z",
+                "generateName": "sandbox-runner-",
+                "generation": 1,
+                "labels": {
+                    "app": "sandbox-runner",
+                    "apps.kubernetes.io/pod-index": "0",
+                    "controller-revision-hash": "sandbox-runner-5d9777c8fc",
+                    "statefulset.kubernetes.io/pod-name": "sandbox-runner-0"
+                },
+                "name": "sandbox-runner-0",
+                "namespace": "pi-sandbox",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "StatefulSet",
+                        "name": "sandbox-runner",
+                        "uid": "e539bba1-dd44-4596-a695-3fd3a28a755b"
+                    }
+                ],
+                "resourceVersion": "43153",
+                "uid": "9c56d5e5-b24e-42ee-8801-032319211c34"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "mkdir -p /workspace/src\necho \"hello from the sandbox\" \u003e /workspace/hello.txt\nprintf '{\\n  \"name\": \"sandbox-workspace\"\\n}\\n' \u003e /workspace/package.json\necho \"console.log('hi');\" \u003e /workspace/src/index.\ncat \u003e /workspace/add.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a + b); }, 5000);\nEOF\ncat \u003e /workspace/subtract.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a - b); }, 14000);\nEOF\ntouch /workspace/.ready\nexec tail -f /dev/null\n"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "POD_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.name"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POD_NAMESPACE",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "node:22-alpine",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "runner",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-c",
+                                    "test -f /workspace/.ready"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 2,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostname": "sandbox-runner-0",
+                "nodeName": "pi-sandbox-control-plane",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 1000,
+                    "runAsNonRoot": true,
+                    "runAsUser": 1000,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "subdomain": "sandbox-runners",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "workspace"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:38Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:42:00Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:44Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:44Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:42:00Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://b7569766999a512ef0231bab644c1f41fea3a8944ade6e853e1783ffd666707a",
+                        "image": "docker.io/library/node:22-alpine",
+                        "imageID": "docker.io/library/node@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://789476e9baeea0cab41de0d66cece8ac32c8d509dd2a9cd806e57983cd3426ce",
+                                "exitCode": 255,
+                                "finishedAt": "2026-06-07T14:32:33Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-06-06T19:42:00Z"
+                            }
+                        },
+                        "name": "runner",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-06-07T14:32:38Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 1000,
+                                "supplementalGroups": [
+                                    1000
+                                ],
+                                "uid": 1000
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.19.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.19.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.11",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.11"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-06-06T19:42:00Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-06-06T19:41:27Z",
+                "generateName": "sandbox-runner-",
+                "generation": 1,
+                "labels": {
+                    "app": "sandbox-runner",
+                    "apps.kubernetes.io/pod-index": "1",
+                    "controller-revision-hash": "sandbox-runner-5d9777c8fc",
+                    "statefulset.kubernetes.io/pod-name": "sandbox-runner-1"
+                },
+                "name": "sandbox-runner-1",
+                "namespace": "pi-sandbox",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "StatefulSet",
+                        "name": "sandbox-runner",
+                        "uid": "e539bba1-dd44-4596-a695-3fd3a28a755b"
+                    }
+                ],
+                "resourceVersion": "43149",
+                "uid": "becdc853-a1d5-4d2a-9e70-d28e16eef7ec"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "mkdir -p /workspace/src\necho \"hello from the sandbox\" \u003e /workspace/hello.txt\nprintf '{\\n  \"name\": \"sandbox-workspace\"\\n}\\n' \u003e /workspace/package.json\necho \"console.log('hi');\" \u003e /workspace/src/index.\ncat \u003e /workspace/add.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a + b); }, 5000);\nEOF\ncat \u003e /workspace/subtract.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a - b); }, 14000);\nEOF\ntouch /workspace/.ready\nexec tail -f /dev/null\n"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "POD_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.name"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POD_NAMESPACE",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "node:22-alpine",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "runner",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-c",
+                                    "test -f /workspace/.ready"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 2,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostname": "sandbox-runner-1",
+                "nodeName": "pi-sandbox-control-plane",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 1000,
+                    "runAsNonRoot": true,
+                    "runAsUser": 1000,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "subdomain": "sandbox-runners",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "workspace"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:38Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:41:27Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:41Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:41Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:41:27Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://74ae60ddd65b6e9f67e5083bbf9883a9bb7b1eade5f335c6b096809d34a1e0c2",
+                        "image": "docker.io/library/node:22-alpine",
+                        "imageID": "docker.io/library/node@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://787040934e200869fab12af989259d27fbd983298b816a473d616678bdb42199",
+                                "exitCode": 255,
+                                "finishedAt": "2026-06-07T14:32:33Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-06-06T19:41:27Z"
+                            }
+                        },
+                        "name": "runner",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-06-07T14:32:38Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 1000,
+                                "supplementalGroups": [
+                                    1000
+                                ],
+                                "uid": 1000
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.19.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.19.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.8",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.8"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-06-06T19:41:27Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-06-06T19:40:49Z",
+                "generateName": "sandbox-runner-",
+                "generation": 1,
+                "labels": {
+                    "app": "sandbox-runner",
+                    "apps.kubernetes.io/pod-index": "2",
+                    "controller-revision-hash": "sandbox-runner-5d9777c8fc",
+                    "statefulset.kubernetes.io/pod-name": "sandbox-runner-2"
+                },
+                "name": "sandbox-runner-2",
+                "namespace": "pi-sandbox",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "StatefulSet",
+                        "name": "sandbox-runner",
+                        "uid": "e539bba1-dd44-4596-a695-3fd3a28a755b"
+                    }
+                ],
+                "resourceVersion": "43151",
+                "uid": "786691bb-b501-4f29-97d6-971948dbf534"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "mkdir -p /workspace/src\necho \"hello from the sandbox\" \u003e /workspace/hello.txt\nprintf '{\\n  \"name\": \"sandbox-workspace\"\\n}\\n' \u003e /workspace/package.json\necho \"console.log('hi');\" \u003e /workspace/src/index.\ncat \u003e /workspace/add.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a + b); }, 5000);\nEOF\ncat \u003e /workspace/subtract.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a - b); }, 14000);\nEOF\ntouch /workspace/.ready\nexec tail -f /dev/null\n"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "POD_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.name"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POD_NAMESPACE",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "node:22-alpine",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "runner",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-c",
+                                    "test -f /workspace/.ready"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 2,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostname": "sandbox-runner-2",
+                "nodeName": "pi-sandbox-control-plane",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 1000,
+                    "runAsNonRoot": true,
+                    "runAsUser": 1000,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "subdomain": "sandbox-runners",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "workspace"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:38Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:40:50Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:44Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:44Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:40:50Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://e86326b61d3e743006bf0d51bf32786a771051e1159da06d14f2a21e6312b3f6",
+                        "image": "docker.io/library/node:22-alpine",
+                        "imageID": "docker.io/library/node@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://3d9c5a2dd263f076e9ad41dc9321deb1b5e26fb7720eda85eac392b4157e6d1f",
+                                "exitCode": 255,
+                                "finishedAt": "2026-06-07T14:32:33Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-06-06T19:40:50Z"
+                            }
+                        },
+                        "name": "runner",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-06-07T14:32:38Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 1000,
+                                "supplementalGroups": [
+                                    1000
+                                ],
+                                "uid": 1000
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.19.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.19.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.10",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.10"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-06-06T19:40:50Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-06-06T19:40:11Z",
+                "generateName": "sandbox-runner-",
+                "generation": 1,
+                "labels": {
+                    "app": "sandbox-runner",
+                    "apps.kubernetes.io/pod-index": "3",
+                    "controller-revision-hash": "sandbox-runner-5d9777c8fc",
+                    "statefulset.kubernetes.io/pod-name": "sandbox-runner-3"
+                },
+                "name": "sandbox-runner-3",
+                "namespace": "pi-sandbox",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "StatefulSet",
+                        "name": "sandbox-runner",
+                        "uid": "e539bba1-dd44-4596-a695-3fd3a28a755b"
+                    }
+                ],
+                "resourceVersion": "43144",
+                "uid": "97013bfc-ee24-45fd-bf9f-962aeae4717c"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "mkdir -p /workspace/src\necho \"hello from the sandbox\" \u003e /workspace/hello.txt\nprintf '{\\n  \"name\": \"sandbox-workspace\"\\n}\\n' \u003e /workspace/package.json\necho \"console.log('hi');\" \u003e /workspace/src/index.\ncat \u003e /workspace/add.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a + b); }, 5000);\nEOF\ncat \u003e /workspace/subtract.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a - b); }, 14000);\nEOF\ntouch /workspace/.ready\nexec tail -f /dev/null\n"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "POD_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.name"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POD_NAMESPACE",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "node:22-alpine",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "runner",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-c",
+                                    "test -f /workspace/.ready"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 2,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostname": "sandbox-runner-3",
+                "nodeName": "pi-sandbox-control-plane",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 1000,
+                    "runAsNonRoot": true,
+                    "runAsUser": 1000,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "subdomain": "sandbox-runners",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "workspace"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:38Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:40:11Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:40Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:40Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:40:11Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://721a7bf2e0460e910d09ffe452191d9d8de488bdace0bff6957509e5f54e7103",
+                        "image": "docker.io/library/node:22-alpine",
+                        "imageID": "docker.io/library/node@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://31134e319b96f03d41f4ec5a2b0e963a0b8d3e2d41a0692e7e8eaec4263074dc",
+                                "exitCode": 255,
+                                "finishedAt": "2026-06-07T14:32:33Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-06-06T19:40:12Z"
+                            }
+                        },
+                        "name": "runner",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-06-07T14:32:38Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 1000,
+                                "supplementalGroups": [
+                                    1000
+                                ],
+                                "uid": 1000
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.19.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.19.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.12",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.12"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-06-06T19:40:11Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-06-06T19:39:33Z",
+                "generateName": "sandbox-runner-",
+                "generation": 1,
+                "labels": {
+                    "app": "sandbox-runner",
+                    "apps.kubernetes.io/pod-index": "4",
+                    "controller-revision-hash": "sandbox-runner-5d9777c8fc",
+                    "statefulset.kubernetes.io/pod-name": "sandbox-runner-4"
+                },
+                "name": "sandbox-runner-4",
+                "namespace": "pi-sandbox",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "StatefulSet",
+                        "name": "sandbox-runner",
+                        "uid": "e539bba1-dd44-4596-a695-3fd3a28a755b"
+                    }
+                ],
+                "resourceVersion": "43148",
+                "uid": "be9a5601-b3c2-4d8f-9758-2821a314e5ee"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "mkdir -p /workspace/src\necho \"hello from the sandbox\" \u003e /workspace/hello.txt\nprintf '{\\n  \"name\": \"sandbox-workspace\"\\n}\\n' \u003e /workspace/package.json\necho \"console.log('hi');\" \u003e /workspace/src/index.\ncat \u003e /workspace/add.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a + b); }, 5000);\nEOF\ncat \u003e /workspace/subtract.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a - b); }, 14000);\nEOF\ntouch /workspace/.ready\nexec tail -f /dev/null\n"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "POD_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.name"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POD_NAMESPACE",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "node:22-alpine",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "runner",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-c",
+                                    "test -f /workspace/.ready"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 2,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostname": "sandbox-runner-4",
+                "nodeName": "pi-sandbox-control-plane",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 1000,
+                    "runAsNonRoot": true,
+                    "runAsUser": 1000,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "subdomain": "sandbox-runners",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "workspace"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:38Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:39:33Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:41Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:41Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:39:33Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://cc3bf55bb430067a0a0f421fc64ecd50b65b4fa7b268dd1e65770df9070cf608",
+                        "image": "docker.io/library/node:22-alpine",
+                        "imageID": "docker.io/library/node@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://5eeb7f3f15c0f665b84c0553375390927ce33c1c873b189ae59f3689995eb131",
+                                "exitCode": 255,
+                                "finishedAt": "2026-06-07T14:32:33Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-06-06T19:39:34Z"
+                            }
+                        },
+                        "name": "runner",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-06-07T14:32:38Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 1000,
+                                "supplementalGroups": [
+                                    1000
+                                ],
+                                "uid": 1000
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.19.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.19.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.7",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.7"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-06-06T19:39:33Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-06-06T19:38:55Z",
+                "generateName": "sandbox-runner-",
+                "generation": 1,
+                "labels": {
+                    "app": "sandbox-runner",
+                    "apps.kubernetes.io/pod-index": "5",
+                    "controller-revision-hash": "sandbox-runner-5d9777c8fc",
+                    "statefulset.kubernetes.io/pod-name": "sandbox-runner-5"
+                },
+                "name": "sandbox-runner-5",
+                "namespace": "pi-sandbox",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "StatefulSet",
+                        "name": "sandbox-runner",
+                        "uid": "e539bba1-dd44-4596-a695-3fd3a28a755b"
+                    }
+                ],
+                "resourceVersion": "43150",
+                "uid": "5537ca88-6496-4ba8-8bd1-fab61653e583"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "mkdir -p /workspace/src\necho \"hello from the sandbox\" \u003e /workspace/hello.txt\nprintf '{\\n  \"name\": \"sandbox-workspace\"\\n}\\n' \u003e /workspace/package.json\necho \"console.log('hi');\" \u003e /workspace/src/index.\ncat \u003e /workspace/add.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a + b); }, 5000);\nEOF\ncat \u003e /workspace/subtract.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a - b); }, 14000);\nEOF\ntouch /workspace/.ready\nexec tail -f /dev/null\n"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "POD_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.name"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POD_NAMESPACE",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "node:22-alpine",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "runner",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-c",
+                                    "test -f /workspace/.ready"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 2,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostname": "sandbox-runner-5",
+                "nodeName": "pi-sandbox-control-plane",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 1000,
+                    "runAsNonRoot": true,
+                    "runAsUser": 1000,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "subdomain": "sandbox-runners",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "workspace"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:38Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:38:55Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:44Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:44Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:38:55Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://9294f2e78884566a3f2027b91b0e5e51fbea81eef1fd63dfb640befcdbd4c154",
+                        "image": "docker.io/library/node:22-alpine",
+                        "imageID": "docker.io/library/node@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://bdf489cc034c93744f8cdbe72949c7c0aff97dcd4693d2d533b897285e44bb6f",
+                                "exitCode": 255,
+                                "finishedAt": "2026-06-07T14:32:33Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-06-06T19:38:56Z"
+                            }
+                        },
+                        "name": "runner",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-06-07T14:32:38Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 1000,
+                                "supplementalGroups": [
+                                    1000
+                                ],
+                                "uid": 1000
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.19.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.19.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.9",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.9"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-06-06T19:38:55Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-06-06T19:38:22Z",
+                "generateName": "sandbox-runner-",
+                "generation": 1,
+                "labels": {
+                    "app": "sandbox-runner",
+                    "apps.kubernetes.io/pod-index": "6",
+                    "controller-revision-hash": "sandbox-runner-5d9777c8fc",
+                    "statefulset.kubernetes.io/pod-name": "sandbox-runner-6"
+                },
+                "name": "sandbox-runner-6",
+                "namespace": "pi-sandbox",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "StatefulSet",
+                        "name": "sandbox-runner",
+                        "uid": "e539bba1-dd44-4596-a695-3fd3a28a755b"
+                    }
+                ],
+                "resourceVersion": "43145",
+                "uid": "d4197d3f-0866-47f0-b472-d8221e2dfd52"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "mkdir -p /workspace/src\necho \"hello from the sandbox\" \u003e /workspace/hello.txt\nprintf '{\\n  \"name\": \"sandbox-workspace\"\\n}\\n' \u003e /workspace/package.json\necho \"console.log('hi');\" \u003e /workspace/src/index.\ncat \u003e /workspace/add.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a + b); }, 5000);\nEOF\ncat \u003e /workspace/subtract.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a - b); }, 14000);\nEOF\ntouch /workspace/.ready\nexec tail -f /dev/null\n"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "POD_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.name"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POD_NAMESPACE",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "node:22-alpine",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "runner",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-c",
+                                    "test -f /workspace/.ready"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 2,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostname": "sandbox-runner-6",
+                "nodeName": "pi-sandbox-control-plane",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 1000,
+                    "runAsNonRoot": true,
+                    "runAsUser": 1000,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "subdomain": "sandbox-runners",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "workspace"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:38Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:38:22Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:40Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:40Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:38:22Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://b017e1a945becbac79820410ac4431070fbaabe1079a21c081dae969695969dc",
+                        "image": "docker.io/library/node:22-alpine",
+                        "imageID": "docker.io/library/node@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://144565d60fe4ad4b797a0ad34d6f5f50700473af90985b245280b0f542b46d7d",
+                                "exitCode": 255,
+                                "finishedAt": "2026-06-07T14:32:33Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-06-06T19:38:22Z"
+                            }
+                        },
+                        "name": "runner",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-06-07T14:32:38Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 1000,
+                                "supplementalGroups": [
+                                    1000
+                                ],
+                                "uid": 1000
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.19.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.19.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.5",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.5"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-06-06T19:38:22Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-06-06T19:37:49Z",
+                "generateName": "sandbox-runner-",
+                "generation": 1,
+                "labels": {
+                    "app": "sandbox-runner",
+                    "apps.kubernetes.io/pod-index": "7",
+                    "controller-revision-hash": "sandbox-runner-5d9777c8fc",
+                    "statefulset.kubernetes.io/pod-name": "sandbox-runner-7"
+                },
+                "name": "sandbox-runner-7",
+                "namespace": "pi-sandbox",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "StatefulSet",
+                        "name": "sandbox-runner",
+                        "uid": "e539bba1-dd44-4596-a695-3fd3a28a755b"
+                    }
+                ],
+                "resourceVersion": "43152",
+                "uid": "9f407cf4-1eaa-49b1-a5e0-c9835e01b7bb"
+            },
+            "spec": {
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "mkdir -p /workspace/src\necho \"hello from the sandbox\" \u003e /workspace/hello.txt\nprintf '{\\n  \"name\": \"sandbox-workspace\"\\n}\\n' \u003e /workspace/package.json\necho \"console.log('hi');\" \u003e /workspace/src/index.\ncat \u003e /workspace/add.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a + b); }, 5000);\nEOF\ncat \u003e /workspace/subtract.js \u003c\u003c 'EOF'\nconst [a, b] = [Number(process.argv[2]), Number(process.argv[3])];\nsetTimeout(() =\u003e { console.log(a - b); }, 14000);\nEOF\ntouch /workspace/.ready\nexec tail -f /dev/null\n"
+                        ],
+                        "command": [
+                            "/bin/sh",
+                            "-c"
+                        ],
+                        "env": [
+                            {
+                                "name": "POD_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.name"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "POD_NAMESPACE",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "metadata.namespace"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "node:22-alpine",
+                        "imagePullPolicy": "IfNotPresent",
+                        "name": "runner",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "/bin/sh",
+                                    "-c",
+                                    "test -f /workspace/.ready"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 2,
+                            "periodSeconds": 5,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "allowPrivilegeEscalation": false,
+                            "capabilities": {
+                                "drop": [
+                                    "ALL"
+                                ]
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ],
+                        "workingDir": "/workspace"
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostname": "sandbox-runner-7",
+                "nodeName": "pi-sandbox-control-plane",
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                    "fsGroup": 1000,
+                    "runAsNonRoot": true,
+                    "runAsUser": 1000,
+                    "seccompProfile": {
+                        "type": "RuntimeDefault"
+                    }
+                },
+                "serviceAccount": "default",
+                "serviceAccountName": "default",
+                "subdomain": "sandbox-runners",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists",
+                        "tolerationSeconds": 300
+                    }
+                ],
+                "volumes": [
+                    {
+                        "emptyDir": {},
+                        "name": "workspace"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:38Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:37:49Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:44Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-07T14:32:44Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-06-06T19:37:49Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "250m",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://c6dfa0332b0edeec225f48942e2d3905b9bbd904d440becd9a1a765eca24ad03",
+                        "image": "docker.io/library/node:22-alpine",
+                        "imageID": "docker.io/library/node@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://d0e82dcaf2289ad271336979e7c12288afc641873124392dd0c5261e45da10d6",
+                                "exitCode": 255,
+                                "finishedAt": "2026-06-07T14:32:33Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-06-06T19:37:49Z"
+                            }
+                        },
+                        "name": "runner",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            },
+                            "requests": {
+                                "cpu": "250m",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-06-07T14:32:38Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 1000,
+                                "supplementalGroups": [
+                                    1000
+                                ],
+                                "uid": 1000
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/workspace",
+                                "name": "workspace"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "172.19.0.2",
+                "hostIPs": [
+                    {
+                        "ip": "172.19.0.2"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.244.0.6",
+                "podIPs": [
+                    {
+                        "ip": "10.244.0.6"
+                    }
+                ],
+                "qosClass": "Guaranteed",
+                "startTime": "2026-06-06T19:37:49Z"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}
